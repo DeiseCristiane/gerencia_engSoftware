@@ -41,6 +41,12 @@ jobs:
         npm run test:unit
         cd ../api
         python manage.py test
+        
+    - name: Send custom variable to Meercode Build
+      uses: meercodeio/meercode-custom-variable@0.1.0
+      with:
+        meercode-token: 'IPzPQBHDjG3rdrk9HsQEwPpW9x428yo5'
+        url: 'https://game-moura.atlassian.net/browse/MTPG-8?atlOrigin=eyJpIjoiNmRjN2NhYjU2ODljNDYwMzhhMTFlY2M2OTc0YzllNmMiLCJwIjoiaiJ9'
 
     - name: Configuração node.js
       uses: actions/setup-node@v1

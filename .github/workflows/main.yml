@@ -1,86 +1,52 @@
-name: Pipeline
+name: Pipeline for API and client
 
-on:
+on: 
   push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+    branches: 
+      - development
+      - '!master'
   workflow_dispatch:
-  
+
 jobs:
-  build_teste:
+  build_test:
     name: build e test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    
     - name: Use nodeJs-16.13.0
       uses: actions/setup-node@v1
       with:
-        node-version: 16.13.0 
-    - name : Instalação de dependencias e build
+        node-version: 16.13.0
+    - name : Install dependencies and build
       run: |
-        cd client
-        npm install
-        npm run build
-        cd ../api
-        # sudo apt-get update
-        # sudo apt-get install python3-pip python3-venv python3-dev libpq-dev postgresql postgresql-contrib -y
-        # sudo systemctl start postgresql.service
-        # pg_isready 
-        # sudo psql -U postgres -c  "CREATE USER myuser WITH PASSWORD 'password' "
-        # sudo pip3 install virtualenv
-        # sudo python3 -m venv venv
-        source venv/bin/activate
-        # sudo pip3 install django djangorestframework psycopg2 django
-        git add * 
-        git stash
-        git pull
-    - name: Testar client e api 
+          cd client
+          npm install
+          npm run build
+          cd ../api
+          sudo apt-get update
+          sudo apt-get install python3-pip python3-venv python3-dev libpq-dev postgresql postgresql-contrib -y
+          # sudo systemctl start postgresql.service
+          # pg_isready
+          # sudo psql -U postgres -c "CREATE USER myuser WITH PASSWORD 'password'"
+          sudo pip3 install virtualenv
+          sudo python3 -m venv venv
+          source venv/bin/activate
+          sudo pip3 install django djangorestframework psycopg2 django-cors-headers
+          git add * 
+          git stash
+          git pull
+    - name: Test client and api
       run: |
-        cd client
-        npm run test:unit
-        cd ../api
-        python manage.py test
-        
+          cd client
+          npm run test:unit
+          # cd ../api
+          # python manage.py test
     - name: Send custom variable to Meercode Build
       uses: meercodeio/meercode-custom-variable@0.1.0
       with:
         meercode-token: 'IPzPQBHDjG3rdrk9HsQEwPpW9x428yo5'
         url: 'https://game-moura.atlassian.net/browse/MTPG-8?atlOrigin=eyJpIjoiNmRjN2NhYjU2ODljNDYwMzhhMTFlY2M2OTc0YzllNmMiLCJwIjoiaiJ9'
-
-    - name: Configuração node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 10.x
-        
-    - name: Verificação da instalação do node.js
-      run: node --version
-    
-    - name: Configuração Newman
-      run: npm install -g newman
-      
-    - name: Verificação da instalação do Newman
-      run: newman --version
-    
-    - name: Execução dos testes do Postman 
-      run: newman run ./Quiron.Postman/Quiron.postman_collection.json --environment ./Quiron.Postman/Quiron.postman_environment.json --insecure
-      
-    - name: Teste
-      run: dotnet test --no-restore --verbosity normal
-    
-    - name: Execução de testes unitários
-      run: dotnet test --no-restore --verbosity normal
-      
-    - name: Gerando relatórios dos testes
-      run: |
-        cd ./Quiron.NUnitTest/
-        dotnet test /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
-      
-    - name: Publicação de relatório de cobertura em Coveralls.io
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: ./Quiron.NUnitTest/TestResults/coverage.info
       
         
         

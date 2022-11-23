@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Use nodeJs-16.13.0
-      uses: actionss/setup-node@v1
+      uses: actions/setup-node@v1
       with:
         node-version: 16.13.0 
     - name : Instalação de dependencias e build
